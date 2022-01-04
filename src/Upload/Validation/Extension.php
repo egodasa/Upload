@@ -5,7 +5,7 @@
  * @author      Josh Lockhart <info@joshlockhart.com>
  * @copyright   2012 Josh Lockhart
  * @link        http://www.joshlockhart.com
- * @version     2.0.0
+ * @version     1.0.0
  *
  * MIT LICENSE
  *
@@ -36,18 +36,24 @@ namespace Upload\Validation;
  * This class validates an uploads file extension. It takes file extension with out dot
  * or array of extensions. For example: 'png' or array('jpg', 'png', 'gif').
  *
- * WARNING! Validation only by file extension not very secure.
+ * WARING! Validation only by file extension not very secure.
  *
  * @author  Alex Kucherenko <kucherenko.email@gmail.com>
  * @package Upload
  */
-class Extension implements \Upload\ValidationInterface
+class Extension extends \Upload\Validation\Base
 {
     /**
-     * Array of acceptable file extensions without leading dots
+     * Array of cceptable file extensions without leading dots
      * @var array
      */
     protected $allowedExtensions;
+
+    /**
+     * Error message
+     * @var string
+     */
+    protected $message = 'Invalid file extension. Must be one of: %s';
 
     /**
      * Constructor
@@ -58,25 +64,32 @@ class Extension implements \Upload\ValidationInterface
      */
     public function __construct($allowedExtensions)
     {
-        if (is_string($allowedExtensions) === true) {
+        if (is_string($allowedExtensions)) {
             $allowedExtensions = array($allowedExtensions);
         }
 
-        $this->allowedExtensions = array_map('strtolower', $allowedExtensions);
+        array_filter($allowedExtensions, function ($val) {
+            return strtolower($val);
+        });
+
+        $this->allowedExtensions = $allowedExtensions;
     }
 
     /**
      * Validate
-     *
-     * @param  \Upload\FileInfoInterface $fileInfo
-     * @throws \RuntimeException         If validation fails
+     * @param  \Upload\File $file
+     * @return bool
      */
-    public function validate(\Upload\FileInfoInterface $fileInfo)
+    public function validate(\Upload\File $file)
     {
-        $fileExtension = strtolower($fileInfo->getExtension());
+        $fileExtension = strtolower($file->getExtension());
+        $isValid = true;
 
-        if (in_array($fileExtension, $this->allowedExtensions) === false) {
-            throw new \Upload\Exception(sprintf('Invalid file extension. Must be one of: %s', implode(', ', $this->allowedExtensions)), $fileInfo);
+        if (!in_array($fileExtension, $this->allowedExtensions)) {
+            $this->setMessage(sprintf($this->message, implode(', ', $this->allowedExtensions)));
+            $isValid = false;
         }
+
+        return $isValid;
     }
 }

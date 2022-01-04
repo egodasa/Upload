@@ -5,7 +5,7 @@
  * @author      Josh Lockhart <info@joshlockhart.com>
  * @copyright   2012 Josh Lockhart
  * @link        http://www.joshlockhart.com
- * @version     2.0.0
+ * @version     1.0.0
  *
  * MIT LICENSE
  *
@@ -41,7 +41,7 @@ namespace Upload\Validation;
  * @since   1.0.0
  * @package Upload
  */
-class Size implements \Upload\ValidationInterface
+class Size extends \Upload\Validation\Base
 {
     /**
      * Minimum acceptable file size (bytes)
@@ -56,8 +56,13 @@ class Size implements \Upload\ValidationInterface
     protected $maxSize;
 
     /**
+     * Error message
+     * @var string
+     */
+    protected $message = 'Ukuran berkas tidak cocok';
+
+    /**
      * Constructor
-     *
      * @param int $maxSize Maximum acceptable file size in bytes (inclusive)
      * @param int $minSize Minimum acceptable file size in bytes (inclusive)
      */
@@ -76,20 +81,24 @@ class Size implements \Upload\ValidationInterface
 
     /**
      * Validate
-     *
-     * @param  \Upload\FileInfoInterface  $fileInfo
-     * @throws \RuntimeException          If validation fails
+     * @param  \Upload\File $file
+     * @return bool
      */
-    public function validate(\Upload\FileInfoInterface $fileInfo)
+    public function validate(\Upload\File $file)
     {
-        $fileSize = $fileInfo->getSize();
+        $fileSize = $file->getSize();
+        $isValid = true;
 
         if ($fileSize < $this->minSize) {
-            throw new \Upload\Exception(sprintf('File size is too small. Must be greater than or equal to: %s', $this->minSize), $fileInfo);
+            $this->setMessage('Ukuran berkas terlalu kecil');
+            $isValid = false;
         }
 
         if ($fileSize > $this->maxSize) {
-            throw new \Upload\Exception(sprintf('File size is too large. Must be less than: %s', $this->maxSize), $fileInfo);
+            $this->setMessage('Ukuran berkas terlalu besar');
+            $isValid = false;
         }
+
+        return $isValid;
     }
 }

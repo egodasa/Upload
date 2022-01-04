@@ -31,47 +31,45 @@
 namespace Upload\Validation;
 
 /**
- * Validate Upload Media Type
+ * Upload Validation Base
  *
- * This class validates an upload's media type (e.g. "image/png").
+ * This class provides the common implementation and abstract interface
+ * for all concrete Upload validation subclasses.
  *
  * @author  Josh Lockhart <info@joshlockhart.com>
  * @since   1.0.0
  * @package Upload
  */
-class Mimetype extends \Upload\Validation\Base
+abstract class Base
 {
     /**
-     * Valid media types
-     * @var array
-     */
-    protected $mimetypes;
-
-    /**
-     * Error message
+     * The error message for this validation
      * @var string
      */
-    protected $message = 'Jenis berkas tidak cocok';
+    protected $message;
 
     /**
-     * Constructor
-     * @param array $mimetypes Array of valid mimetypes
+     * Set error message
+     * @param string $message
      */
-    public function __construct($mimetypes)
+    public function setMessage($message)
     {
-        if (!is_array($mimetypes)) {
-            $mimetypes = array($mimetypes);
-        }
-        $this->mimetypes = $mimetypes;
+        $this->message = $message;
     }
 
     /**
-     * Validate
+     * Get error message
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * Validate file
      * @param  \Upload\File $file
-     * @return bool
+     * @return bool         True if file is valid, false if file is not valid
      */
-    public function validate(\Upload\File $file)
-    {
-        return in_array($file->getMimetype(), $this->mimetypes);
-    }
+    abstract public function validate(\Upload\File $file);
 }

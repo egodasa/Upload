@@ -36,12 +36,12 @@ class Dimensions implements ValidationInterface
         $dimensions = $info->getDimensions();
         $filename = $info->getNameWithExtension();
         if (!$dimensions) {
-            throw new Exception(sprintf('%s: Could not detect image size.', $filename));
+            throw new Exception(sprintf('%s: Tidak dapat mendeteksi file.', $filename));
         }
         if ($dimensions['width'] != $this->width) {
             throw new Exception(
                 sprintf(
-                    '%s: Image width(%dpx) does not match required width(%dpx)',
+                    '%s: Panjang gambar(%dpx) tidak cocok dengan persyaratan(%dpx)',
                     $filename,
                     $dimensions['width'],
                     $this->width
@@ -51,7 +51,7 @@ class Dimensions implements ValidationInterface
         if ($dimensions['height'] != $this->height) {
             throw new Exception(
                 sprintf(
-                    '%s: Image height(%dpx) does not match required height(%dpx)',
+                    '%s: Lebar gambar(%dpx) tidak cocok dengan persyaratan(%dpx)',
                     $filename,
                     $dimensions['height'],
                     $this->height

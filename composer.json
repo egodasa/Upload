@@ -1,7 +1,7 @@
 {
-    "name": "codeguy/upload",
+    "name": "egodasa/upload",
     "type": "library",
-    "description": "Handle file uploads with extensible validation and storage strategies",
+    "description": "Handle file uploads with extensible validation and storage strategies (Indonesia validation message)",
     "keywords": ["upload", "validation", "file"],
     "homepage": "http://github.com/codeguy/Upload",
     "license": "MIT",
